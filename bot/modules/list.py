@@ -16,12 +16,12 @@ def list_buttons(update, context):
         key = update.message.text.split(" ", maxsplit=1)[1]
     except IndexError:
         return sendMessage('Send a search key along with command', context.bot, update)
-    buttons = button_build.ButtonMaker()
-    buttons.sbutton("Drive Root", f"types {user_id} root")
-    buttons.sbutton("Recursive", f"types {user_id} recu")
-    buttons.sbutton("Cancel", f"types {user_id} cancel")
-    button = InlineKeyboardMarkup(buttons.build_menu(2))
-    sendMarkup('Choose option to list.', context.bot, update, button)
+    gdrive = GoogleDriveHelper()
+    msg, button = gdrive.drive_list(key, isRecursive=False, itemType="both")
+    if button:
+        sendMarkup(msg, context.bot, update, button)
+    else:
+        sendMessage(f'No result found for <i>{key}</i>', context.bot, update)
 
 def select_type(update, context):
     query = update.callback_query
