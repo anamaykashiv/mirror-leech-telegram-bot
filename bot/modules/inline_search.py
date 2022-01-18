@@ -11,9 +11,9 @@ async def inline_search(_, event: InlineQuery):
         answers.append(
             InlineQueryResultArticle(
                 title="Inline Search Mode",
-                description="You can directly search for leeched files from here",
+                description="You can directly search files in drive from here",
                 input_message_content=InputTextMessageContent(
-                    message_text="You can search for the leeched files from anywhere directly",
+                    message_text="You can search for the files in drive from anywhere directly",
                     disable_web_page_preview=True
                 ),
                 reply_markup=InlineKeyboardMarkup([
