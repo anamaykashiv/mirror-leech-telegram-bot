@@ -652,7 +652,7 @@ class GoogleDriveHelper:
             LOGGER.error(err)
             return {'files': []}
 
-    def drive_list(self, fileName, stopDup=False, noMulti=False, isRecursive=True, itemType=""):
+    def drive_list(self, fileName, stopDup=False, noMulti=False, isRecursive=True, itemType="", inline=None):
         msg = ""
         fileName = self.escapes(str(fileName))
         contents_count = 0
@@ -743,10 +743,13 @@ class GoogleDriveHelper:
             self.edit_telegraph()
 
         msg = f"<b>Found {contents_count} result for <i>{fileName}</i></b>"
+        url = f"https://telegra.ph/{self.path[0]}"
         buttons = button_build.ButtonMaker()
         buttons.buildbutton("🔎 VIEW", f"https://telegra.ph/{self.path[0]}")
-
-        return msg, InlineKeyboardMarkup(buttons.build_menu(1))
+        if inline:
+            return msg, url
+        else:   
+            return msg, InlineKeyboardMarkup(buttons.build_menu(1))
 
     def count(self, link):
         try:
