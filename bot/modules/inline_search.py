@@ -1,64 +1,86 @@
 from bot import app, LOGGER
+from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQuery, InlineQueryResultArticle, \
     InputTextMessageContent
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from pyrogram.errors import QueryIdInvalid
 
+thumb = "https://res.cloudinary.com/animezz-hub/image/upload/v1642851366/moviezzhub/thumb/IMG_20220122_170453_198_h6hflm.jpg"
+
 @app.on_inline_query()
 async def inline_search(_, event: InlineQuery):
     answers = list()
+    LOGGER.info(event.query)
     if event.query == "":
         answers.append(
             InlineQueryResultArticle(
-                title="Inline Search Mode",
-                description="You can directly search files in drive from here",
+                title="Search Your Desired File Here",
                 input_message_content=InputTextMessageContent(
-                    message_text="You can search for the files in drive from anywhere directly",
-                    disable_web_page_preview=True
+                    "You can search your files anywhere anytime using inline method\n\nUse Search Button Below"
                 ),
-                reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("Search Here", switch_inline_query_current_chat="")],
-                    [InlineKeyboardButton("Mirror Group", url="https://t.me/Fubuki_mirror")]
-                ])
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                text="Search",
+                                switch_inline_query_current_chat=""
+                            )
+                        ]
+                    ]
+                )
             )
         )
     else:
         key = event.query
         gdrive = GoogleDriveHelper()
-        msg, url = gdrive.drive_list(key, isRecursive=False, itemType="both", inline=True)
-        if url:
-            answers.append(
-                InlineQueryResultArticle(
-                    title=f"Found Result for {key}",
-                    description="Click To Get Link",
-                    input_message_content=InputTextMessageContent(
-                        message_text=msg,
-                        disable_web_page_preview=True
-                    ),
-                    reply_markup=InlineKeyboardMarkup([
-                        [InlineKeyboardButton("Result", url=url)],
-                        [InlineKeyboardButton("Search Again", switch_inline_query_current_chat="")],
-                    ])
+        file_title, desc, drive_url, index_url, view_link = gdrive.drive_list_inline(key, isRecursive=False, itemType="both")
+        if file_title:
+            for title in file_title:
+                answers.append(
+                    InlineQueryResultArticle(
+                        title=title,
+                        description=desc[file_title.index(title)],
+                        thumb_url=thumb,
+                        input_message_content=InputTextMessageContent(
+                            message_text=f"Title : {title}\n{desc[file_title.index(title)]}",
+                            disable_web_page_preview=True
+                        ),
+                        reply_markup=InlineKeyboardMarkup([
+                            [InlineKeyboardButton("View Link", url=view_link[file_title.index(title)])],
+                            [InlineKeyboardButton("Drive Link", url=drive_url[file_title.index(title)])],
+                            [InlineKeyboardButton("Index Link", url=index_url[file_title.index(title)])],
+                            [InlineKeyboardButton("Search Again", switch_inline_query_current_chat="")],
+                        ])
+                    )
                 )
-            )
         else:
             answers.append(
                 InlineQueryResultArticle(
                     title=f"No Result Found for {key}",
                     description="Try with another search key",
                     input_message_content=InputTextMessageContent(
-                        message_text=msg,
-                        disable_web_page_preview=True
+                        message_text="No Result Found For Your Search Key\nTry with another search"
                     ),
                     reply_markup=InlineKeyboardMarkup([
-                        [InlineKeyboardButton("Search Again", switch_inline_query_current_chat="")],
+                        [InlineKeyboardButton("Search Again", switch_inline_query_current_chat="")]
                     ])
                 )
             )
-        try:
-            await event.answer(
-                results=answers,
-                cache_time=0
-            )
-        except QueryIdInvalid:
-            LOGGER.info(f"QueryIdInvalid: {event.query}")
+    try:
+        await event.answer(
+            results=answers,
+            cache_time=0
+        )
+    except QueryIdInvalid:
+        LOGGER.info(f"QueryIdInvalid: {event.query}")
+
+@app.on_message(filters.command("updated"))
+async def quit_group(bot, update):
+    await bot.send_message(
+        chat_id=update.chat.id,
+        text="yes updated",
+        reply_to_message_id=update.message_id
+    )
+    # await bot.leave_chat(
+    #     chat_id=update.chat.id
+    # )
