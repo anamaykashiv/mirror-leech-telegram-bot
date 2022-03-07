@@ -7,7 +7,6 @@ from pyrogram.errors import QueryIdInvalid
 
 thumb = "https://telegra.ph/file/08c580abaebfa493d3a06.jpg"
 
-
 @app.on_inline_query()
 async def inline_search(_, event: InlineQuery):
     answers = list()
@@ -38,29 +37,28 @@ async def inline_search(_, event: InlineQuery):
             key, isRecursive=False, itemType="both")
         if file_title:
             for title in file_title:
-                if file_title.index(title) <= 50:
-                answers.append(
-                    InlineQueryResultArticle(
-                        # max_results=30,
-                        title=title,
-                        description=desc[file_title.index(title)],
-                        thumb_url=thumb,
-                        input_message_content=InputTextMessageContent(
-                            message_text=f"Title : {title}\n{desc[file_title.index(title)]}",
-                            disable_web_page_preview=True
-                        ),
-                        reply_markup=InlineKeyboardMarkup([
-                            [InlineKeyboardButton(
-                                "View Link", url=view_link[file_title.index(title)])],
-                            [InlineKeyboardButton(
-                                "Drive Link", url=drive_url[file_title.index(title)])],
-                            [InlineKeyboardButton(
-                                "Index Link", url=index_url[file_title.index(title)])],
-                            [InlineKeyboardButton(
-                                "Search Again", switch_inline_query_current_chat="")],
-                        ])
+                if file_title.index(title) < 49:
+                    answers.append(
+                        InlineQueryResultArticle(
+                            title=title,
+                            description=desc[file_title.index(title)],
+                            thumb_url=thumb,
+                            input_message_content=InputTextMessageContent(
+                                message_text=f"Title : {title}\n{desc[file_title.index(title)]}",
+                                disable_web_page_preview=True
+                            ),
+                            reply_markup=InlineKeyboardMarkup([
+                                [InlineKeyboardButton(
+                                    "View Link", url=view_link[file_title.index(title)])],
+                                [InlineKeyboardButton(
+                                    "Drive Link", url=drive_url[file_title.index(title)])],
+                                [InlineKeyboardButton(
+                                    "Index Link", url=index_url[file_title.index(title)])],
+                                [InlineKeyboardButton(
+                                    "Search Again", switch_inline_query_current_chat="")],
+                            ])
+                        )
                     )
-                )
         else:
             answers.append(
                 InlineQueryResultArticle(
