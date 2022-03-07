@@ -33,7 +33,7 @@ async def inline_search(_, event: InlineQuery):
     else:
         key = event.query
         gdrive = GoogleDriveHelper()
-        file_title, desc, drive_url, index_url, view_link = gdrive.drive_list_inline(key, isRecursive=False, itemType="both")
+        file_title, desc, drive_url, index_url, view_link = gdrive.drive_list_inline(key, isRecursive=False, itemType="both", limit=50)
         if file_title:
             for title in file_title:
                 answers.append(
