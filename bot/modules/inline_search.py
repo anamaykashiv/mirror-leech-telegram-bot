@@ -5,7 +5,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQue
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from pyrogram.errors import QueryIdInvalid
 
-thumb = "https://res.cloudinary.com/animezz-hub/image/upload/v1642851366/moviezzhub/thumb/IMG_20220122_170453_198_h6hflm.jpg"
+thumb = "https://telegra.ph/file/08c580abaebfa493d3a06.jpg"
 
 @app.on_inline_query()
 async def inline_search(_, event: InlineQuery):
