@@ -977,11 +977,11 @@ class GoogleDriveHelper:
         index_url = []
         view_link = [] 
         msg = ""
-        fileName = self.__escapes(str(fileName))
+        fileName = self.escapes(str(fileName))
         contents_count = 0
         Title = False
         if len(DRIVES_IDS) > 1:
-            token_service = self.__alt_authorize()
+            token_service = self.alt_authorize()
             if token_service is not None:
                 self.__service = token_service
         for index, parent_id in enumerate(DRIVES_IDS):
@@ -989,7 +989,7 @@ class GoogleDriveHelper:
                 isRecur = False
             else:
                 isRecur = isRecursive
-            response = self.__drive_query(parent_id, fileName, stopDup, isRecur, itemType)
+            response = self.drive_query(parent_id, fileName, stopDup, isRecur, itemType)
             if not response["files"] and noMulti:
                 break
             elif not response["files"]:
@@ -1008,7 +1008,7 @@ class GoogleDriveHelper:
                     drive_url.append(d_url)
                     if INDEX_URLS[index] is not None:
                         if isRecur:
-                            url_path = "/".join([rquote(n, safe='') for n in self.__get_recursive_list(file, parent_id)])
+                            url_path = "/".join([rquote(n, safe='') for n in self.get_recursive_list(file, parent_id)])
                         else:
                             url_path = rquote(f'{file.get("name")}')
                         i_url = f'{INDEX_URLS[index]}/{url_path}/'
@@ -1025,7 +1025,7 @@ class GoogleDriveHelper:
                         if isRecur:
                             url_path = "/".join(
                                 rquote(n, safe='')
-                                for n in self.__get_recursive_list(file, parent_id)
+                                for n in self.get_recursive_list(file, parent_id)
                             )
 
                         else:
