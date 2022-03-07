@@ -36,6 +36,7 @@ async def inline_search(_, event: InlineQuery):
         file_title, desc, drive_url, index_url, view_link = gdrive.drive_list_inline(key, isRecursive=False, itemType="both")
         if file_title:
             for title in file_title:
+                if file_title.index(title) <= 50:
                 answers.append(
                     InlineQueryResultArticle(
                         #max_results=30,
