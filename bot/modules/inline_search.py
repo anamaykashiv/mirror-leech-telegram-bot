@@ -7,6 +7,7 @@ from pyrogram.errors import QueryIdInvalid
 
 thumb = "https://telegra.ph/file/08c580abaebfa493d3a06.jpg"
 
+
 @app.on_inline_query()
 async def inline_search(_, event: InlineQuery):
     answers = list()
@@ -33,13 +34,14 @@ async def inline_search(_, event: InlineQuery):
     else:
         key = event.query
         gdrive = GoogleDriveHelper()
-        file_title, desc, drive_url, index_url, view_link = gdrive.drive_list_inline(key, isRecursive=False, itemType="both")
+        file_title, desc, drive_url, index_url, view_link = gdrive.drive_list_inline(
+            key, isRecursive=False, itemType="both")
         if file_title:
             for title in file_title:
                 if file_title.index(title) <= 50:
                 answers.append(
                     InlineQueryResultArticle(
-                        #max_results=30,
+                        # max_results=30,
                         title=title,
                         description=desc[file_title.index(title)],
                         thumb_url=thumb,
@@ -48,10 +50,14 @@ async def inline_search(_, event: InlineQuery):
                             disable_web_page_preview=True
                         ),
                         reply_markup=InlineKeyboardMarkup([
-                            [InlineKeyboardButton("View Link", url=view_link[file_title.index(title)])],
-                            [InlineKeyboardButton("Drive Link", url=drive_url[file_title.index(title)])],
-                            [InlineKeyboardButton("Index Link", url=index_url[file_title.index(title)])],
-                            [InlineKeyboardButton("Search Again", switch_inline_query_current_chat="")],
+                            [InlineKeyboardButton(
+                                "View Link", url=view_link[file_title.index(title)])],
+                            [InlineKeyboardButton(
+                                "Drive Link", url=drive_url[file_title.index(title)])],
+                            [InlineKeyboardButton(
+                                "Index Link", url=index_url[file_title.index(title)])],
+                            [InlineKeyboardButton(
+                                "Search Again", switch_inline_query_current_chat="")],
                         ])
                     )
                 )
@@ -64,7 +70,8 @@ async def inline_search(_, event: InlineQuery):
                         message_text="No Result Found For Your Search Key\nTry with another search"
                     ),
                     reply_markup=InlineKeyboardMarkup([
-                        [InlineKeyboardButton("Search Again", switch_inline_query_current_chat="")]
+                        [InlineKeyboardButton(
+                            "Search Again", switch_inline_query_current_chat="")]
                     ])
                 )
             )
@@ -75,6 +82,7 @@ async def inline_search(_, event: InlineQuery):
         )
     except QueryIdInvalid:
         LOGGER.info(f"QueryIdInvalid: {event.query}")
+
 
 @app.on_message(filters.command("updated"))
 async def quit_group(bot, update):
