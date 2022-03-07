@@ -38,7 +38,7 @@ async def inline_search(_, event: InlineQuery):
             for title in file_title:
                 answers.append(
                     InlineQueryResultArticle(
-                        max_results=30,
+                        #max_results=30,
                         title=title,
                         description=desc[file_title.index(title)],
                         thumb_url=thumb,
